@@ -1,0 +1,1 @@
+{"version":3,"file":"vehicleRow.d.ts","sourceRoot":"","sources":["../../../src/generated/types/vehicleRow.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AAEH,MAAM,WAAW,UAAU;IACzB,WAAW,EAAE,MAAM,CAAC;IACpB,SAAS,EAAE,MAAM,CAAC;IAClB,aAAa,EAAE,MAAM,CAAC;IACtB,cAAc,EAAE,MAAM,CAAC;IACvB,iBAAiB,EAAE,MAAM,CAAC;IAC1B,oBAAoB,EAAE,MAAM,CAAC;IAC7B,cAAc,EAAE,MAAM,CAAC;CACxB"}

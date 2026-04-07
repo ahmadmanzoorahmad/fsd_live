@@ -1,0 +1,267 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: fuel
+    description: Fuel Subsidy Dashboard data
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /fuel/summary:
+    get:
+      operationId: getFuelSummary
+      tags: [fuel]
+      summary: Get top-level fuel subsidy summary
+      description: Returns key KPIs from PM Dashboard sheet
+      responses:
+        "200":
+          description: Summary data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FuelSummary"
+  /fuel/province-overview:
+    get:
+      operationId: getFuelProvinceOverview
+      tags: [fuel]
+      summary: Get province-wise breakdown
+      description: Returns province-wise overview table data
+      responses:
+        "200":
+          description: Province overview
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProvinceRow"
+  /fuel/vehicle-breakdown:
+    get:
+      operationId: getFuelVehicleBreakdown
+      tags: [fuel]
+      summary: Get vehicle type breakdown
+      description: Returns vehicle type breakdown table data
+      responses:
+        "200":
+          description: Vehicle breakdown
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VehicleRow"
+  /fuel/recd-from-eto:
+    get:
+      operationId: getFuelRecdFromEto
+      tags: [fuel]
+      summary: Get data received from ETO
+      description: Returns province+vehicle breakdown of data received from ETO
+      responses:
+        "200":
+          description: Recd from ETO data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EtoRow"
+  /fuel/upload:
+    post:
+      operationId: uploadFuelExcel
+      tags: [fuel]
+      summary: Upload updated Excel file
+      description: Replace the fuel subsidy Excel with an updated version
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+      responses:
+        "200":
+          description: Upload success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadResult"
+  /fuel/fetch-from-url:
+    post:
+      operationId: fetchFuelFromUrl
+      tags: [fuel]
+      summary: Fetch Excel from a URL
+      description: Fetch and replace the Excel from a Google Drive, SharePoint, or OneDrive shared link
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FetchFromUrlBody"
+      responses:
+        "200":
+          description: Fetch success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadResult"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    FuelSummary:
+      type: object
+      properties:
+        lastUpdated:
+          type: string
+        receivedFromEto:
+          type: number
+        cnic:
+          type: number
+        ntn:
+          type: number
+        sentToSbp:
+          type: number
+        returnedBySbp:
+          type: number
+        balanceWithSbp:
+          type: number
+        qtyProcessedBySbp:
+          type: number
+        amountDisbursedBySbp:
+          type: number
+        qtyPendingWithSbp:
+          type: number
+      required:
+        - lastUpdated
+        - receivedFromEto
+        - cnic
+        - ntn
+        - sentToSbp
+        - returnedBySbp
+        - balanceWithSbp
+        - qtyProcessedBySbp
+        - amountDisbursedBySbp
+        - qtyPendingWithSbp
+    ProvinceRow:
+      type: object
+      properties:
+        province:
+          type: string
+        sentToSbp:
+          type: number
+        returnedBySbp:
+          type: number
+        balanceWithSbp:
+          type: number
+        qtyProcessedBySbp:
+          type: number
+        amountDisbursedBySbp:
+          type: number
+        pendingWithSbp:
+          type: number
+      required:
+        - province
+        - sentToSbp
+        - returnedBySbp
+        - balanceWithSbp
+        - qtyProcessedBySbp
+        - amountDisbursedBySbp
+        - pendingWithSbp
+    VehicleRow:
+      type: object
+      properties:
+        vehicleType:
+          type: string
+        sentToSbp:
+          type: number
+        returnedBySbp:
+          type: number
+        balanceWithSbp:
+          type: number
+        qtyProcessedBySbp:
+          type: number
+        amountDisbursedBySbp:
+          type: number
+        pendingWithSbp:
+          type: number
+      required:
+        - vehicleType
+        - sentToSbp
+        - returnedBySbp
+        - balanceWithSbp
+        - qtyProcessedBySbp
+        - amountDisbursedBySbp
+        - pendingWithSbp
+    EtoRow:
+      type: object
+      properties:
+        province:
+          type: string
+        vehicleType:
+          type: string
+        total:
+          type: number
+        cnic:
+          type: number
+        ntn:
+          type: number
+      required:
+        - province
+        - vehicleType
+        - total
+        - cnic
+        - ntn
+    UploadResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+        - message
+    FetchFromUrlBody:
+      type: object
+      properties:
+        url:
+          type: string
+        sourceType:
+          type: string
+          enum: [googledrive, sharepoint, onedrive, direct]
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - url
+        - sourceType

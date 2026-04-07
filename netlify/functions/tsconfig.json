@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "rootDir": ".",
+    "paths": {
+      "@netlify/blobs": ["../../node_modules/@netlify/blobs"],
+      "xlsx": ["../../node_modules/xlsx"]
+    }
+  },
+  "include": ["./**/*.ts"],
+  "exclude": ["../../node_modules"]
+}

@@ -1,0 +1,14 @@
+[build]
+  # Full build: install → codegen → embed Excel as base64 → build frontend
+  command = "pnpm install && pnpm --filter @workspace/api-spec run codegen && node netlify/generate-initial-data.mjs && pnpm --filter @workspace/fuel-dashboard run build:netlify"
+  publish   = "artifacts/fuel-dashboard/dist/public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# SPA fallback — all non-asset paths serve index.html
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
